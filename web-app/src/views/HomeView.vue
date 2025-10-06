@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FeaturedVoicecard from '@/components/FeaturedVoicecard.vue';
 </script>
 
 <template>
@@ -19,27 +20,11 @@
     <div class="mx-auto w-full mt-12 mb-16">
       <h2 class="text-3xl font-bold text-center">Featured Voices</h2>
     </div>
-    <div class="mx-auto w-full flex gap-4 mb-8">
-      <div class="bg-green-400 h-[425px] w-[300px] border border-blue-800">
-        <div class="mx-4 py-1 flex">
-          <div class="text-sm font-medium text-left w-1/2">#85</div>
-          <div class="text-sm font-medium text-right w-1/2">Tanzania 🇹🇿</div>
-        </div>
-        <div class="mx-4  h-[250px] bg-white"> Image </div>
-        <div class="mx-4 py-1">
-          <p class="text-sm">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
-        </div>
-        <div class="mx-4 py-1 flex">
-          <div class=" w-1/2"></div>
-          <div class="text-sm  text-right w-1/2 text-xs"> Timestamp goes here </div>
-        </div>
-        <div class="mx-4 py-1 flex">
-          <div class="text-sm font-medium text-left w-1/2">Jeremy Pivor</div>
-          <div class="text-sm font-medium text-right w-1/2">Land Voice</div>
-        </div>
-      </div>
+    <div class="mx-auto w-full flex gap-8 mb-8">
+      <FeaturedVoicecard />
+      <FeaturedVoicecard />
+      <FeaturedVoicecard />
+      <FeaturedVoicecard />
     </div>
     <div class="mb-4 w-full flex flex-row-reverse">
       <div class="border border-blue-800 px-4 py-2 text-sm hover:bg-cyan-500 hover:text-white hover:border-4 hover:border-t hover:border-l hover:border-blue-800 h-[40px] cursor-pointer">View All</div>
