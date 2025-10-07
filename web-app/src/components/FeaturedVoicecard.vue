@@ -10,7 +10,7 @@
         <div class="mx-4  h-[250px] bg-white"> Image </div>
         <div class="mx-4 py-1">
           <p class="text-sm">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna -aliqua.
           </p>
         </div>
         <div class="mx-4 py-1 flex">
