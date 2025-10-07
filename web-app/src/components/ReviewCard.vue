@@ -10,6 +10,8 @@ interface Props {
     voice: string
     actionDescription: string
   }
+  isSubmitting?: boolean
+  submissionError?: string
 }
 
 interface Emits {
@@ -17,7 +19,10 @@ interface Emits {
   (e: 'back'): void
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  isSubmitting: false,
+  submissionError: ''
+})
 const emit = defineEmits<Emits>()
 
 // Reactive reference for the image URL from localStorage
@@ -157,6 +162,18 @@ const getVoiceTypeName = (voice: string) => {
       </div>
     </div>
     
+    <!-- Submission Error -->
+    <div v-if="submissionError" class="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+      <div class="flex items-start">
+        <i class="bi bi-exclamation-triangle text-red-600 mr-2 mt-0.5"></i>
+        <div class="text-xs text-red-800">
+          <p class="font-medium mb-1">Submission Failed</p>
+          <p>{{ submissionError }}</p>
+          <p class="mt-1">Please try again or contact support if the problem persists.</p>
+        </div>
+      </div>
+    </div>
+
     <!-- Submission Notice -->
     <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
       <div class="flex items-start">
@@ -172,17 +189,28 @@ const getVoiceTypeName = (voice: string) => {
     <div class="w-full mb-2 flex justify-between flex-row">
       <button 
         @click="handleBack"
-        class="w-1/4 bg-gray-500 text-sm text-white font-medium p-2 hover:cursor-pointer hover:bg-gray-600 transition-colors"
+        :disabled="isSubmitting"
+        class="w-1/4 bg-gray-500 text-sm text-white font-medium p-2 hover:cursor-pointer hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Back <i class="bi bi-arrow-left pl-2"></i>
       </button>
       
       <button 
         @click="handleSubmit"
-        class="w-1/3 bg-green-600 text-sm text-white font-medium p-2 hover:cursor-pointer hover:bg-green-700 transition-colors"
+        :disabled="isSubmitting"
+        class="w-1/3 bg-green-600 text-sm text-white font-medium p-2 hover:cursor-pointer hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed relative"
       >
-        <i class="bi bi-check-circle mr-2"></i>
-        Submit Action
+        <span v-if="isSubmitting" class="flex items-center justify-center">
+          <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Submitting...
+        </span>
+        <span v-else>
+          <i class="bi bi-check-circle mr-2"></i>
+          Submit Action
+        </span>
       </button>
     </div>
   </div>

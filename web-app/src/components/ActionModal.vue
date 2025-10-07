@@ -4,6 +4,8 @@ import CaptureActionCard from './CaptureActionCard.vue'
 import AboutCard from './AboutCard.vue'
 import ShareActionCard from './ShareActionCard.vue'
 import ReviewCard from './ReviewCard.vue'
+import { submitAction as submitToSupabase } from '@/lib/supabase'
+import type { SubmissionData } from '@/types/database'
 
 interface Props {
   isOpen: boolean
@@ -20,6 +22,10 @@ const emit = defineEmits<Emits>()
 // Modal state management
 const currentStep = ref(1)
 const totalSteps = 4
+
+// Submission state
+const isSubmitting = ref(false)
+const submissionError = ref('')
 
 // Data collection from each step
 const modalData = ref({
@@ -47,6 +53,8 @@ const prevStep = () => {
 const closeModal = () => {
   // Reset modal state
   currentStep.value = 1
+  isSubmitting.value = false
+  submissionError.value = ''
   modalData.value = {
     image: null,
     imageUrl: '',
@@ -114,9 +122,56 @@ const updateActionData = (data: { actionDescription: string }) => {
   nextStep()
 }
 
-const submitAction = () => {
-  emit('submit', modalData.value)
-  closeModal()
+const submitAction = async () => {
+  if (isSubmitting.value) return
+  
+  try {
+    console.log('ActionModal: Starting submission process...')
+    isSubmitting.value = true
+    submissionError.value = ''
+
+    // Prepare submission data
+    const submissionData: SubmissionData = {
+      image: modalData.value.image,
+      imageUrl: modalData.value.imageUrl,
+      name: modalData.value.name,
+      country: modalData.value.country,
+      voice: modalData.value.voice,
+      actionDescription: modalData.value.actionDescription
+    }
+
+    console.log('📋 ActionModal: Submission data prepared:', {
+      hasImage: !!submissionData.image,
+      imageFileName: submissionData.image?.name,
+      name: submissionData.name,
+      country: submissionData.country,
+      voice: submissionData.voice,
+      actionDescriptionLength: submissionData.actionDescription.length
+    })
+
+    // Submit to Supabase
+    const result = await submitToSupabase(submissionData)
+    
+    if (result.success) {
+      console.log('ActionModal: Submission successful!', result.data)
+      // Emit success to parent component
+      emit('submit', result.data)
+      
+      // Show success message and close modal
+      alert('✓Action submitted successfully! Thank you for your contribution to the climate movement.')
+      closeModal()
+    } else {
+      // Handle submission error
+      console.error('✖ActionModal: Submission failed:', result.error)
+      submissionError.value = result.error || 'Failed to submit action'
+    }
+  } catch (error) {
+    console.error('✖ActionModal: Submission exception:', error)
+    submissionError.value = error instanceof Error ? error.message : 'An unexpected error occurred'
+  } finally {
+    isSubmitting.value = false
+    console.log('✓ActionModal: Submission process completed')
+  }
 }
 
 // Computed properties
@@ -214,6 +269,8 @@ const stepTitle = computed(() => {
           @submit="submitAction"
           @back="prevStep"
           :data="modalData"
+          :isSubmitting="isSubmitting"
+          :submissionError="submissionError"
         />
       </div>
     </div>
