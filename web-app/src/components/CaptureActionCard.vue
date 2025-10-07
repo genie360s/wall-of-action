@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onUnmounted } from 'vue'
 
 interface Props {
   showBack?: boolean
@@ -40,16 +40,29 @@ const handleImageUpload = (event: Event) => {
 // Start camera
 const startCamera = async () => {
   try {
+    // Stop any existing stream first
+    stopCamera()
+    
     stream.value = await navigator.mediaDevices.getUserMedia({ 
-      video: { width: 480, height: 480 } 
+      video: { 
+        width: { ideal: 480 },
+        height: { ideal: 480 },
+        facingMode: 'user' // Use front camera if available
+      } 
     })
     
-    if (videoRef.value) {
+    if (videoRef.value && stream.value) {
       videoRef.value.srcObject = stream.value
       isUsingCamera.value = true
+      
+      // Ensure video plays
+      videoRef.value.onloadedmetadata = () => {
+        videoRef.value?.play().catch(console.error)
+      }
     }
   } catch (error) {
     console.error('Error accessing camera:', error)
+    isUsingCamera.value = false
     alert('Unable to access camera. Please check permissions or upload an image instead.')
   }
 }
@@ -112,6 +125,9 @@ const cleanup = () => {
   }
 }
 
+// Cleanup when component unmounts
+onUnmounted(cleanup)
+
 // Expose cleanup for parent component
 defineExpose({ cleanup })
 </script>
@@ -146,8 +162,8 @@ defineExpose({ cleanup })
             ref="videoRef"
             autoplay
             muted
-            class="w-full h-full object-cover"
-            @loadedmetadata="() => videoRef?.play()"
+            playsinline
+            class="w-full h-full object-cover transform scale-x-[-1]"
           ></video>
           
           <!-- Placeholder when no image/camera -->

@@ -57,7 +57,7 @@ const handleSubmit = (data: any) => {
       <FeaturedVoiceCard />
     </div>
     <div class="mb-4 w-full flex flex-row-reverse">
-      <div class="border border-blue-800 px-4 py-2 text-sm hover:bg-cyan-500 hover:text-white hover:border-4 hover:border-t hover:border-l hover:border-blue-800 h-[40px] cursor-pointer">View All</div>
+      <RouterLink to="/thewall"><div class="border border-blue-800 px-4 py-2 text-sm hover:bg-cyan-500 hover:text-white hover:border-4 hover:border-t hover:border-l hover:border-blue-800 h-[40px] cursor-pointer">View All</div></RouterLink>
     </div>
     <div class="w-full mb-4 flex flex-col  border-t border-b border-blue-800 py-4 gap-1">
       <div class="w-full">
