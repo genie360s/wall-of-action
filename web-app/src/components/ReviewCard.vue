@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+
 interface Props {
   data: {
     image: File | null
@@ -17,6 +19,54 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+
+// Reactive reference for the image URL from localStorage
+const storedImageUrl = ref<string>('')
+
+// Get image from localStorage
+const getStoredImage = () => {
+  try {
+    const base64Image = localStorage.getItem('wall-action-image')
+    if (base64Image) {
+      storedImageUrl.value = base64Image
+      console.log('Retrieved image from localStorage')
+    }
+  } catch (error) {
+    console.error('Failed to retrieve image from localStorage:', error)
+  }
+}
+
+// Create a computed property for the image URL with multiple fallbacks
+const displayImageUrl = computed(() => {
+  // Priority 1: Image from localStorage
+  if (storedImageUrl.value) {
+    return storedImageUrl.value
+  }
+  
+  // Priority 2: Original imageUrl from props  
+  if (props.data.imageUrl && props.data.imageUrl.length > 0) {
+    return props.data.imageUrl
+  }
+  
+  // Priority 3: Create new blob URL from File if available
+  if (props.data.image) {
+    return URL.createObjectURL(props.data.image)
+  }
+  
+  return ''
+})
+
+// Debug logging
+onMounted(() => {
+  getStoredImage()
+  console.log('ReviewCard data:', {
+    hasImage: !!props.data.image,
+    hasImageUrl: !!props.data.imageUrl,
+    imageUrlLength: props.data.imageUrl?.length || 0,
+    hasStoredImage: !!storedImageUrl.value,
+    displayImageUrl: displayImageUrl.value ? 'Available' : 'Not available'
+  })
+})
 
 // Navigation handlers
 const handleSubmit = () => {
@@ -58,14 +108,20 @@ const getVoiceTypeName = (voice: string) => {
         <h3 class="text-sm font-semibold text-gray-700 mb-2">Your Action Image</h3>
         <div class="relative rounded-full h-32 w-32 border border-blue-900 overflow-hidden bg-gray-50 flex items-center justify-center">
           <img 
-            v-if="data.imageUrl" 
-            :src="data.imageUrl" 
+            v-if="displayImageUrl" 
+            :src="displayImageUrl" 
             alt="Your action" 
             class="w-full h-full object-cover"
+            @error="(event) => {
+              console.error('Image failed to load:', event);
+              console.log('Failed URL:', displayImageUrl);
+            }"
+            @load="() => console.log('Image loaded successfully:', displayImageUrl)"
           />
           <div v-else class="text-gray-400 text-center">
             <i class="bi bi-camera text-2xl mb-1"></i>
             <p class="text-xs">No image</p>
+            <p class="text-xs mt-1" v-if="data.image">File available but no URL</p>
           </div>
         </div>
       </div>

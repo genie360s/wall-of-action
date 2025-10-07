@@ -55,14 +55,51 @@ const closeModal = () => {
     voice: '',
     actionDescription: ''
   }
+  
+  // Clear localStorage
+  localStorage.removeItem('wall-action-image')
+  localStorage.removeItem('wall-action-image-name')
+  localStorage.removeItem('wall-action-image-type')
+  
   emit('close')
 }
 
 // Handle data updates from child components
-const updateCaptureData = (data: { image: File | null, imageUrl: string }) => {
+const updateCaptureData = async (data: { image: File | null, imageUrl: string }) => {
   modalData.value.image = data.image
   modalData.value.imageUrl = data.imageUrl
+  
+  // Store image in localStorage as base64
+  if (data.image) {
+    try {
+      const base64 = await fileToBase64(data.image)
+      localStorage.setItem('wall-action-image', base64)
+      localStorage.setItem('wall-action-image-name', data.image.name)
+      localStorage.setItem('wall-action-image-type', data.image.type)
+      console.log('Image stored in localStorage')
+    } catch (error) {
+      console.error('Failed to store image in localStorage:', error)
+    }
+  }
+  
+  console.log('Image captured in ActionModal:', {
+    hasFile: !!data.image,
+    fileName: data.image?.name,
+    fileSize: data.image?.size,
+    imageUrl: data.imageUrl,
+    imageUrlLength: data.imageUrl?.length
+  })
   nextStep()
+}
+
+// Helper function to convert File to base64
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = error => reject(error)
+  })
 }
 
 const updateAboutData = (data: { name: string, country: string, voice: string }) => {
