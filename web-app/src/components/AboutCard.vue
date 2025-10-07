@@ -1,6 +1,27 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import countriesData from '@/assets/countries.json'
+
+interface Props {
+  showBack?: boolean
+  initialData?: {
+    name: string
+    country: string
+    voice: string
+  }
+}
+
+interface Emits {
+  (e: 'next', data: { name: string, country: string, voice: string }): void
+  (e: 'back'): void
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showBack: false,
+  initialData: () => ({ name: '', country: '', voice: '' })
+})
+
+const emit = defineEmits<Emits>()
 
 // Form data
 const formData = ref({
@@ -17,7 +38,18 @@ const countryInput = ref<HTMLInputElement | null>(null)
 // Load countries data
 onMounted(() => {
   countries.value = countriesData
+  // Initialize with any passed data
+  if (props.initialData) {
+    formData.value = { ...props.initialData }
+  }
 })
+
+// Watch for prop changes
+watch(() => props.initialData, (newData) => {
+  if (newData) {
+    formData.value = { ...newData }
+  }
+}, { deep: true })
 
 // Filtered countries based on input
 const filteredCountries = computed(() => {
@@ -46,9 +78,36 @@ const hideSuggestions = () => {
     showSuggestions.value = false
   }, 200)
 }
+
+// Navigation handlers
+const handleNext = () => {
+  // Validate form
+  if (!formData.value.name.trim()) {
+    alert('Please enter your name.')
+    return
+  }
+  if (!formData.value.country.trim()) {
+    alert('Please enter your country.')
+    return
+  }
+  if (!formData.value.voice) {
+    alert('Please select a voice type.')
+    return
+  }
+  
+  emit('next', {
+    name: formData.value.name.trim(),
+    country: formData.value.country.trim(),
+    voice: formData.value.voice
+  })
+}
+
+const handleBack = () => {
+  emit('back')
+}
 </script>
 <template>
-    <div class="mx-auto border border-blue-900 shadow-md rounded-e-sm flex flex-col justify-center w-[40vw]  p-4">
+    <div class="mx-auto border border-blue-900 shadow-md rounded-e-sm flex flex-col justify-center w-full p-4">
       <div class="w-full mx-auto flex flex-row justify-between mt-4 mb-4 border-b border-gray-400 pb-4">
         <div class="rounded-full border border-gray-400 h-12 w-12 text-gray-400 flex items-center justify-center"><i class="bi bi-camera"></i></div>
         <div class="rounded-full border border-blue-900 text-blue-900  h-12 w-12 flex items-center justify-center"><i class="bi bi-person-fill"></i></div>
@@ -117,8 +176,21 @@ const hideSuggestions = () => {
         </form>
       </div>
       <div class="w-full mb-2 flex justify-between flex-row">
-        <div class="w-1/4 bg-blue-900 text-sm text-white font-medium p-2 hover:cursor-pointer">Back <i class="bi bi-arrow-left pl-16"></i></div>
-        <div class="w-1/4 bg-blue-900 text-sm text-white font-medium p-2 hover:cursor-pointer">Next <i class="bi bi-arrow-right pl-16"></i></div>
+        <button 
+          v-if="showBack"
+          @click="handleBack"
+          class="w-1/4 bg-gray-500 text-sm text-white font-medium p-2 hover:cursor-pointer hover:bg-gray-600 transition-colors"
+        >
+          Back <i class="bi bi-arrow-left pl-2"></i>
+        </button>
+        <div v-else class="w-1/4"></div>
+        
+        <button 
+          @click="handleNext"
+          class="w-1/4 bg-blue-900 text-sm text-white font-medium p-2 hover:cursor-pointer hover:bg-blue-800 transition-colors"
+        >
+          Next <i class="bi bi-arrow-right pl-2"></i>
+        </button>
       </div>
     </div>
 </template>

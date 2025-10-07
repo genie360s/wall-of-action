@@ -1,8 +1,41 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
+
+interface Props {
+  showBack?: boolean
+  initialData?: {
+    actionDescription: string
+  }
+}
+
+interface Emits {
+  (e: 'next', data: { actionDescription: string }): void
+  (e: 'back'): void
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showBack: false,
+  initialData: () => ({ actionDescription: '' })
+})
+
+const emit = defineEmits<Emits>()
 
 const actionText = ref('')
 const maxCharacters = 350
+
+// Initialize with any passed data
+onMounted(() => {
+  if (props.initialData?.actionDescription) {
+    actionText.value = props.initialData.actionDescription
+  }
+})
+
+// Watch for prop changes
+watch(() => props.initialData, (newData) => {
+  if (newData?.actionDescription) {
+    actionText.value = newData.actionDescription
+  }
+}, { deep: true })
 
 // Computed property for character count
 const characterCount = computed(() => actionText.value.length)
@@ -16,10 +49,26 @@ const characterCountColor = computed(() => {
   if (remainingCharacters.value <= 50) return 'text-orange-500'
   return 'text-gray-500'
 })
+
+// Navigation handlers
+const handleNext = () => {
+  if (!actionText.value.trim()) {
+    alert('Please describe your climate action before proceeding.')
+    return
+  }
+  
+  emit('next', {
+    actionDescription: actionText.value.trim()
+  })
+}
+
+const handleBack = () => {
+  emit('back')
+}
 </script>
 
 <template>
-    <div class="mx-auto border border-blue-900 shadow-md rounded-e-sm flex flex-col justify-center w-[40vw]  p-4">
+    <div class="mx-auto border border-blue-900 shadow-md rounded-e-sm flex flex-col justify-center w-full p-4">
       <div class="w-full mx-auto flex flex-row justify-between mt-4 mb-4 border-b border-gray-400 pb-4">
         <div class="rounded-full border border-gray-400 text-gray-400 h-12 w-12 flex items-center justify-center"><i class="bi bi-camera"></i></div>
         <div class="rounded-full border border-gray-400 text-gray-400 h-12 w-12 flex items-center justify-center"><i class="bi bi-person-fill"></i></div>
@@ -48,9 +97,22 @@ const characterCountColor = computed(() => {
         </form>
       </div>
       
-      <div class="w-full mb-2 flex justify-between flex-row-reverse">
-        <div class="w-1/4 bg-blue-900 text-sm text-white font-medium p-2 hidden hover:cursor-pointer">Back <i class="bi bi-arrow-left"></i></div>
-        <div class="w-1/4 bg-blue-900 text-sm text-white font-medium p-2 hover:cursor-pointer">Next <i class="bi bi-arrow-right"></i></div>
+      <div class="w-full mb-2 flex justify-between flex-row">
+        <button 
+          v-if="showBack"
+          @click="handleBack"
+          class="w-1/4 bg-gray-500 text-sm text-white font-medium p-2 hover:cursor-pointer hover:bg-gray-600 transition-colors"
+        >
+          Back <i class="bi bi-arrow-left pl-2"></i>
+        </button>
+        <div v-else class="w-1/4"></div>
+        
+        <button 
+          @click="handleNext"
+          class="w-1/4 bg-blue-900 text-sm text-white font-medium p-2 hover:cursor-pointer hover:bg-blue-800 transition-colors"
+        >
+          Next <i class="bi bi-arrow-right pl-2"></i>
+        </button>
       </div>
     </div>
 </template>

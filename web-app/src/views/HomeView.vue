@@ -1,5 +1,25 @@
 <script setup lang="ts">
-import FeaturedVoiceCard from '@/components/FeaturedVoiceCard.vue';
+import { ref } from 'vue'
+import FeaturedVoiceCard from '@/components/FeaturedVoiceCard.vue'
+import ActionModal from '@/components/ActionModal.vue'
+
+// Modal state
+const isModalOpen = ref(false)
+
+// Modal handlers
+const openModal = () => {
+  isModalOpen.value = true
+}
+
+const closeModal = () => {
+  isModalOpen.value = false
+}
+
+const handleSubmit = (data: any) => {
+  console.log('Action submitted:', data)
+  // Here you would typically send the data to your backend
+  alert('Thank you! Your action has been submitted successfully.')
+}
 </script>
 
 <template>
@@ -9,13 +29,23 @@ import FeaturedVoiceCard from '@/components/FeaturedVoiceCard.vue';
     </div>
     <div class="flex w-96 mx-auto gap-8 h-[40px]">
       <div class="w-1/2 border border-blue-800 p-2 text-center font-medium hover:text-white hover:bg-gray-500 hover:border-4 hover:border-t hover:border-l hover:border-black cursor-pointer"><RouterLink to="/thewall"><span class="p-2">VISIT THE WALL</span></RouterLink></div>
-      <div class="w-1/2 border border-blue-800 p-2 text-center font-medium border border-blue-800 bg-cyan-500 hover:border-4 hover:border-t hover:border-l hover:border-blue-800 cursor-pointer"> SHARE YOUR ACTION </div>
+      <button 
+        @click="openModal"
+        class="w-1/2 border border-blue-800 p-2 text-center font-medium border border-blue-800 bg-cyan-500 hover:border-4 hover:border-t hover:border-l hover:border-blue-800 cursor-pointer"
+      > 
+        SHARE YOUR ACTION 
+      </button>
     </div>
     <div class="mx-auto mt-12 text-center text-9xl ">
       <p>A healthy Earth means a healthy population. Let’s envision and act.</p>
     </div>
     <div class="flex mx-auto ">
-      <div class="w-96 mx-auto p-2 font-medium border border-blue-800 hover:border-4 hover:border-t hover:border-l hover:border-blue-800 mt-16 mb-8 text-center bg-cyan-500 h-[40px] cursor-pointer"> SHARE YOUR ACTION TODAY </div>
+      <button 
+        @click="openModal"
+        class="w-96 mx-auto p-2 font-medium border border-blue-800 hover:border-4 hover:border-t hover:border-l hover:border-blue-800 mt-16 mb-8 text-center bg-cyan-500 h-[40px] cursor-pointer"
+      > 
+        SHARE YOUR ACTION TODAY 
+      </button>
     </div>
     <div class="mx-auto w-full mt-12 mb-16">
       <h2 class="text-3xl font-bold text-center">Featured Voices</h2>
@@ -53,5 +83,12 @@ import FeaturedVoiceCard from '@/components/FeaturedVoiceCard.vue';
     <div class="w-full">
       <p class="text-center text-xs text-gray-500">All Copyrights Reserved - &copy; Bowseat 2024</p>
     </div>
+
+    <!-- Action Modal -->
+    <ActionModal 
+      :isOpen="isModalOpen"
+      @close="closeModal"
+      @submit="handleSubmit"
+    />
   </main>
 </template>
