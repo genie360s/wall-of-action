@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FeaturedVoicecard from '@/components/FeaturedVoicecard.vue';
+import FeaturedVoiceCard from '@/components/FeaturedVoiceCard.vue';
 </script>
 
 <template>
@@ -21,10 +21,10 @@ import FeaturedVoicecard from '@/components/FeaturedVoicecard.vue';
       <h2 class="text-3xl font-bold text-center">Featured Voices</h2>
     </div>
     <div class="mx-auto w-full flex gap-8 mb-8">
-      <FeaturedVoicecard />
-      <FeaturedVoicecard />
-      <FeaturedVoicecard />
-      <FeaturedVoicecard />
+      <FeaturedVoiceCard />
+      <FeaturedVoiceCard />
+      <FeaturedVoiceCard />
+      <FeaturedVoiceCard />
     </div>
     <div class="mb-4 w-full flex flex-row-reverse">
       <div class="border border-blue-800 px-4 py-2 text-sm hover:bg-cyan-500 hover:text-white hover:border-4 hover:border-t hover:border-l hover:border-blue-800 h-[40px] cursor-pointer">View All</div>
