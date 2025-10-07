@@ -50,7 +50,7 @@ const handleSubmit = (data: any) => {
     <div class="mx-auto w-full mt-12 mb-16">
       <h2 class="text-3xl font-bold text-center">Featured Voices</h2>
     </div>
-    <div class="mx-auto w-full flex gap-8 mb-8">
+    <div class="mx-auto w-full flex justify-between mb-8">
       <FeaturedVoiceCard />
       <FeaturedVoiceCard />
       <FeaturedVoiceCard />
