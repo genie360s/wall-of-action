@@ -59,7 +59,7 @@ const getCountryFlag = (country: string) => {
 </script>
 
 <template>
-    <div class="bg-green-400 h-[425px] w-[300px] border border-blue-800">
+    <div class="bg-green-400 min-h-[425px] w-[300px] border border-blue-800">
         <div class="mx-4 py-1 flex">
           <div class="text-sm font-medium text-left w-1/2">#{{ props.action.id || (props.index ? props.index + 1 : 1) }}</div>
           <div class="text-sm font-medium text-right w-1/2">{{ props.action.country }} {{ getCountryFlag(props.action.country) }}</div>
