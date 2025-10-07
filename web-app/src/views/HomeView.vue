@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import FeaturedVoiceCard from '@/components/FeaturedVoiceCard.vue'
 import ActionModal from '@/components/ActionModal.vue'
+import { useActions } from '@/composables/useActions'
 
 // Modal state
 const isModalOpen = ref(false)
+
+// Actions data
+const { actions, loading, error, fetchLatestActions } = useActions()
 
 // Modal handlers
 const openModal = () => {
@@ -20,7 +24,14 @@ const handleSubmit = (data: any) => {
   console.log('Action submitted:', data)
   // Here you would typically send the data to your backend
   alert('Thank you! Your action has been submitted successfully.')
+  // Refresh the featured actions after submission
+  fetchLatestActions(4)
 }
+
+// Fetch latest actions on component mount
+onMounted(() => {
+  fetchLatestActions(4)
+})
 </script>
 
 <template>
@@ -51,11 +62,48 @@ const handleSubmit = (data: any) => {
     <div class="mx-auto w-full mt-12 mb-16">
       <h2 class="text-3xl font-bold text-center">Featured Voices</h2>
     </div>
-    <div class="mx-auto w-full flex justify-between mb-8">
-      <FeaturedVoiceCard />
-      <FeaturedVoiceCard />
-      <FeaturedVoiceCard />
-      <FeaturedVoiceCard />
+    
+    <!-- Loading state -->
+    <div v-if="loading" class="mx-auto w-full flex justify-center mb-8">
+      <div class="text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-800 mx-auto mb-4"></div>
+        <p>Loading featured voices...</p>
+      </div>
+    </div>
+    
+    <!-- Error state -->
+    <div v-else-if="error" class="mx-auto w-full flex justify-center mb-8">
+      <div class="text-center text-red-600">
+        <p>Error loading featured voices: {{ error }}</p>
+        <button 
+          @click="fetchLatestActions(4)"
+          class="mt-2 px-4 py-2 bg-blue-800 text-white rounded hover:bg-blue-700"
+        >
+          Try Again
+        </button>
+      </div>
+    </div>
+    
+    <!-- Featured voices -->
+    <div v-else class="mx-auto w-full flex justify-between mb-8 gap-4">
+      <FeaturedVoiceCard 
+        v-for="(action, index) in actions" 
+        :key="action.id || index"
+        :action="action"
+        :index="index"
+      />
+      
+      <!-- Show placeholder cards if less than 4 actions -->
+      <div 
+        v-for="i in Math.max(0, 4 - actions.length)" 
+        :key="`placeholder-${i}`"
+        class="bg-gray-200 h-[425px] w-[300px] border border-gray-300 flex items-center justify-center"
+      >
+        <div class="text-center text-gray-500">
+          <i class="bi bi-plus-circle text-4xl mb-2"></i>
+          <p>No more actions</p>
+        </div>
+      </div>
     </div>
     <div class="mb-4 w-full flex flex-row-reverse">
       <RouterLink to="/thewall"><div class="border border-blue-800 px-4 py-2 text-sm hover:bg-cyan-500 hover:text-white hover:border-4 hover:border-t hover:border-l hover:border-blue-800 h-[40px] cursor-pointer">View All</div></RouterLink>
