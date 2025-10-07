@@ -62,7 +62,6 @@ const closeModal = () => {
 const updateCaptureData = (data: { image: File | null, imageUrl: string }) => {
   modalData.value.image = data.image
   modalData.value.imageUrl = data.imageUrl
-  console.log('Image captured:', { hasFile: !!data.image, imageUrl: data.imageUrl })
   nextStep()
 }
 

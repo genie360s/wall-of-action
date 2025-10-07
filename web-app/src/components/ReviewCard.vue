@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
-
 interface Props {
   data: {
     image: File | null
@@ -19,27 +17,6 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
-
-// Create a computed property for the image URL that falls back to creating a new blob URL if needed
-const displayImageUrl = computed(() => {
-  if (props.data.imageUrl) {
-    return props.data.imageUrl
-  } else if (props.data.image) {
-    // If we have the file but no URL, create one
-    return URL.createObjectURL(props.data.image)
-  }
-  return ''
-})
-
-// Debug: Log the data when component mounts
-onMounted(() => {
-  console.log('ReviewCard mounted with data:', {
-    hasImage: !!props.data.image,
-    imageUrl: props.data.imageUrl,
-    imageUrlLength: props.data.imageUrl?.length,
-    displayImageUrl: displayImageUrl.value
-  })
-})
 
 // Navigation handlers
 const handleSubmit = () => {
@@ -81,11 +58,10 @@ const getVoiceTypeName = (voice: string) => {
         <h3 class="text-sm font-semibold text-gray-700 mb-2">Your Action Image</h3>
         <div class="relative rounded-full h-32 w-32 border border-blue-900 overflow-hidden bg-gray-50 flex items-center justify-center">
           <img 
-            v-if="displayImageUrl" 
-            :src="displayImageUrl" 
+            v-if="data.imageUrl" 
+            :src="data.imageUrl" 
             alt="Your action" 
             class="w-full h-full object-cover"
-            @error="(e) => console.error('Image failed to load:', e)"
           />
           <div v-else class="text-gray-400 text-center">
             <i class="bi bi-camera text-2xl mb-1"></i>
