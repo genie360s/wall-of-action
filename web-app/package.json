@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.74.0",
+    "@vercel/speed-insights": "^1.2.0",
     "bootstrap-icons": "^1.13.1",
     "pinia": "^3.0.3",
     "vue": "^3.5.22",
