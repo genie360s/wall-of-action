@@ -180,6 +180,30 @@ onMounted(() => {
         </button>
       </div>
     </div>
+  <div class="xs:w-full w-[90vw] mx-auto mb-4 flex flex-col  border-t border-b border-blue-800 py-4 gap-1">
+      <div class="w-full">
+        <img alt="Bowseat logo" class="logo" src="@/assets/bowseat-logo.svg" width="100" height="100" />
+      </div>
+      <div class="w-full">
+        <p class="text-xs">Creative Action For Conservation</p>
+      </div>
+      <div class="w-full flex gap-4">
+        <div class="text-sm text-gray-500 hover:text-blue-800 cursor-pointer"><i class="bi bi-facebook"></i></div>
+        <div class="text-sm text-gray-500 hover:text-blue-800 cursor-pointer"><i class="bi bi-twitter"></i></div>
+        <div class="text-sm text-gray-500 hover:text-blue-800 cursor-pointer"><i class="bi bi-instagram"></i></div>
+        <div class="text-sm text-gray-500 hover:text-blue-800 cursor-pointer"><i class="bi bi-linkedin"></i></div>
+        <div class="text-sm text-gray-500 hover:text-blue-800 cursor-pointer"><i class="bi bi-envelope"></i></div>
+        <div class="text-sm text-gray-500 hover:text-blue-800 cursor-pointer"><i class="bi bi-pinterest"></i></div>
+      </div>
+      <div class="w-full flex xs:gap-8 gap-2">
+        <div class="xs:text-sm text-xs text-gray-500 hover:text-blue-800 cursor-pointer"> Terms Of Use</div>
+        <div class="xs:text-sm text-xs text-gray-500 hover:text-blue-800 cursor-pointer"> Privacy Policy </div>
+        <div class="xs:text-sm text-xs text-gray-500 hover:text-blue-800 cursor-pointer"> COPPA Privacy Notice </div>
+      </div>
+    </div>
+    <div class="w-full">
+      <p class="text-center text-xs text-gray-500">All Copyrights Reserved - &copy; Bowseat 2024</p>
+    </div>
   </main>
 </template>
 
