@@ -37,7 +37,7 @@ onMounted(() => {
 <template>
   <main class="container mx-auto space-grotesk-font mt-4">
     <div class="mx-auto w-96">
-      <img alt="Bowseat logo" class="logo" src="@/assets/circle-cta.svg" width="400" height="400" />
+      <img alt="Rotating CTA" class="logo animate-spin-slowest  transition-all duration-500" src="@/assets/circle-cta.svg" width="400" height="400" />
     </div>
     <div class="flex xs:w-96 w-80 mx-auto gap-8 h-[40px]">
       <div class="w-1/2 border border-blue-800 p-2 text-center font-medium hover:text-white hover:bg-gray-500 hover:border-4 hover:border-t hover:border-l hover:border-black cursor-pointer xs:text-base text-xs"><RouterLink to="/thewall"><span class="p-2">VISIT THE WALL</span></RouterLink></div>
