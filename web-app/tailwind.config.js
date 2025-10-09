@@ -15,6 +15,25 @@ export default {
         grotesk: ['Space Grotesk', 'sans-serif'],
         bricolage: ['Bricolage Grotesque', 'sans-serif'],
       },
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+        'spin-slower': 'spin 4s linear infinite',
+        'spin-slowest': 'spin 6s linear infinite',
+        'spin-smooth': 'spin 2.5s ease-in-out infinite',
+        'spin-pulse': 'spin-pulse 3s ease-in-out infinite',
+      },
+      keyframes: {
+        'spin-pulse': {
+          '0%, 100%': { 
+            transform: 'rotate(0deg) scale(1)',
+            opacity: '1'
+          },
+          '50%': { 
+            transform: 'rotate(180deg) scale(1.05)',
+            opacity: '0.8'
+          },
+        }
+      }
     },
   },
   plugins: [
